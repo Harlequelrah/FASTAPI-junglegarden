@@ -1,0 +1,9 @@
+junglenv/
+requirements.txt
+assets
+
+.vscode/ et .idea/
+
+*__pycache__
+alembic
+alembic.ini
