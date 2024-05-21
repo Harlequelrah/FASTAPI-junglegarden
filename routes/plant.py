@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from mysqlapp.database import get_db
 from typing import List
 from fastapi import APIRouter,Depends
+from mysqlapp.authenticate import get_current_user
 
 
 app_plant=APIRouter(
@@ -28,7 +29,7 @@ async def count_plants(db:Session=Depends(get_db)):
     return crud.get_count_plants(db)
 
 @app_plant.post('/create-plant',response_model=schemas.Plant)
-async def create_plant(plant:schemas.PlantCreate,db:Session=Depends(get_db)):
+async def create_plant(plant:schemas.PlantCreate,user:models.User=Depends(get_current_user),db:Session=Depends(get_db)):
     return crud.create_plant(plant,db)
 
 @app_plant.put('/update-plant/{id}',response_model=schemas.Plant)

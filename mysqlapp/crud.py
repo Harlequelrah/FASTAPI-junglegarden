@@ -32,22 +32,26 @@ def create_plant(plant:schemas.PlantCreate,db:Session):
     return db_plant
 
 
-async def is_email_unique(db,email: str):
+def is_email_unique(db,email: str)->bool:
     user=db.query(models.User).filter(models.User.email == email).first()
     if user:return True
-    else:raise HTTPException(status_code=400, detail="Cet email existe déja")
+    else:return False
 
-def create_user(user:schemas.PlantCreate,db:Session):
-    if  is_email_unique(user.email):
+
+def create_user(user:schemas.UserCreate,db:Session):
+    if  not is_email_unique(db,user.email):
         db_user=models.User(
             username=user.username,
             email=user.email,
             password=models.User().set_password(user.password)
         )
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
+        db.add(db_user)
+        db.commit()
+        db.refresh(db_user)
+        return db_user
+    else:
+        raise HTTPException(status_code=400, detail="Cet email existe déja")
+
 
 
 def get_user_by_email(email:str,db:Session):
@@ -137,7 +141,7 @@ def update_user(id:int,user:schemas.UserUpdate,db:Session):
     if db_user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     else:
-        if user.name is not None:
+        if user.username is not None:
             db_user.username=user.username
         if user.email is not None:
             db_user.email=user.email

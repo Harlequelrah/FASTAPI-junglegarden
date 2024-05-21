@@ -2,13 +2,13 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-username=""
-password=""
-database=""
+username="Harlequin"
+password="Quinlehar0179"
+database="harlequelrahshop"
 SQLALCHEMY_DATABASE_URL = "mysql+mysqlconnector://"+username+":"+password+"@localhost:3306/"+database
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
-    pool_pre_ping=True  # Utile pour vérifier la connexion à la base de données
+    pool_pre_ping=True  
 )
 
 

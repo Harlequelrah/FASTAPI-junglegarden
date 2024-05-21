@@ -11,15 +11,15 @@ import bcrypt
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String(40), unique=True, index=True)
-    password = Column(String(40))
-    email = Column(String(40), unique=True, index=True)
+    username = Column(String(50), unique=True, index=True)
+    password = Column(String(256))
+    email = Column(String(256), unique=True, index=True)
     def set_password(self,password: str):
-        self.password= bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
         return self.password
 
     def check_password(self,password:str) -> bool:
-        if self.password==bcrypt.checkpw(password.encode('utf-8')):return True
+        if bcrypt.checkpw(password.encode('utf-8'),self.password.encode('utf-8')):return True
         else:raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Invalid  password",

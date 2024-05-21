@@ -3,9 +3,14 @@ from . import models
 from .database import get_db
 from sqlalchemy.orm import Session
 from jose import jwt,JWTError
-from routes.user import SECRET_KEY,ALGORITHM,oauth2_scheme
 from datetime import datetime, timedelta
+import secrets
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
+SECRET_KEY = str(secrets.token_hex(32))
+ALGORITHM = "HS256"
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 def authenticate_user(db: Session, username: str, password: str):
@@ -27,6 +32,8 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    print("Token:", token)
+    print("hello")
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
